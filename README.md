@@ -1,22 +1,91 @@
 # Benchmark.NET example with tests
 
-This is an example library for use Benchmark.NET and xUnit.
+This is an example Benchmark.NET library with xUnit tests implemented.
 
-## FindDistance
+## Summary
 
-Finds the largest distance between two equal numbers. For example for sequence {1, 2, 3, 2, 2, 1, 3} the answer is 5.
+The fastest implementations are FindWithArray for large arrays and FindWithArray2 for the smallest arrays. This is caused by comparing of maximum distance - in the FindWithArray method it happens only at the end at the cost of using a little bit more memory. FindWithArray2 needs to compare in each loop iteration thus being a little bit slower on bigger arrays but takes less  memory.
+
+The second fastests implementations are the Dictionary ones. They have a big advantage on FindWithArray - they can run on unknown data (FindWithArray and FindWithArray2 needs to know how much different values can ve expect). Due to using Dictionaries in which searching takes O(log(n)) time they are faster than using lists which have O(n) search time but of course slower than FindWithArray where the search time is O(1).
+
+The slowest implementations are the Base ones, as expected.
+
+The use of LINQ makes the implementations a little bit slower.
+
+# FindDistance
+
+Finds the largest distance between two equal numbers in a sequence. For example for {1, 2, 1, 1  3, 2, 2, 1, 3} the answer is 6 (betwen the first and last 1).
+
+## O(n^2) implementations
 
 ### BaseFind 
 
-Most basic two loops implementation. Easiest to implement, longest to run.
+Most basic two loops implementation, easiest to implement, longest to run. Each loop goes for the whole array, a new distance is calculated for two equal numbers.
+
+```
+public int BaseFind(int[] data)
+{
+    int distance = 0;
+
+    for (int i = 0; i < data.Length; ++i)
+    {
+        for (int j = 0; j < data.Length; ++j)
+        {
+            if (data[i] == data[j] && i != j)
+            {
+                int newDistance = Math.Abs(i - j);
+                if (newDistance > distance)
+                {
+                    distance = newDistance;
+                }
+            }
+        }
+    }
+
+    return distance;
+}
+```
 
 ### BaseDividedFind
 
-A little bit quicker version that starts the base one. The inner loop starts from i+1 element instead of from 0.
+A little bit quicker version that starts the base one. The inner loop starts from i+1 element instead of starting from 0.
+
+## O(n) implementations
 
 ### FindWithDict
 
-Implementation that uses generic dictionary with tuple. If a number is found for the first time it adds a tuple with the index it was found. The next occurences of the same number calculates the distance between first index and current index. Then a maximum distance value is found from the dictionary. 
+Implementation that uses generic dictionary with tuple. If a number is found for the first time it adds a tuple with the index it was found. The next occurences of the same number calculates the distance between first index and current index. Then a maximum distance value is found from the dictionary.
+```
+public int FindWithDict(int[] data)
+{
+    int distance = 0;
+
+    // (number, (distance, firstindex))
+    Dictionary<int, (int, int)> distanceDictionary = new Dictionary<int, (int, int)>();
+    for (int i = 0; i < data.Length; i++)
+    {
+        if (distanceDictionary.ContainsKey(data[i]))
+        {
+            distanceDictionary[data[i]] = (i - distanceDictionary[data[i]].Item2,
+                distanceDictionary[data[i]].Item2);
+        }
+        else
+        {
+            distanceDictionary.Add(data[i], (0, i));
+        }
+    }
+
+    foreach (KeyValuePair<int, (int, int)> distanceEntry in distanceDictionary)
+    {
+        if (distanceEntry.Value.Item1 > distance)
+        {
+            distance = distanceEntry.Value.Item1;
+        }
+    }
+
+    return distance;
+}
+```
 
 ### FindWithDictAndLinq
 
@@ -25,6 +94,42 @@ Similar to the previous one but instead of searching maximum value with foreach 
 ### FindWithDictAndClass
 
 Similar to FindWithDict but uses a class instead of a tuple.
+```
+private class DistanceStruct
+{
+    public int Distance { get; set; }
+    public int FirstIndex { get; set; }
+}
+
+public int FindWithDictAndClass(int[] data)
+{
+    int distance = 0;
+
+    // (number, (distance, firstindex))
+    Dictionary<int, DistanceStruct> distanceDictionary = new Dictionary<int, DistanceStruct>();
+    for (int i = 0; i < data.Length; i++)
+    {
+        if (distanceDictionary.ContainsKey(data[i]))
+        {
+            distanceDictionary[data[i]].Distance = i - distanceDictionary[data[i]].FirstIndex;
+        }
+        else
+        {
+            distanceDictionary.Add(data[i], new DistanceStruct {FirstIndex = i});
+        }
+    }
+
+    foreach (KeyValuePair<int, DistanceStruct> distanceEntry in distanceDictionary)
+    {
+        if (distanceEntry.Value.Distance > distance)
+        {
+            distance = distanceEntry.Value.Distance;
+        }
+    }
+
+    return distance;
+}
+```
 
 ### FindWithDictClassAndLinq
 
@@ -33,10 +138,66 @@ Similar to FindWithDictAndLinq but uses a class instead of a tuple.
 ### FindWithArray
 
 Uses two arrays and stores first index and distances for numbers in seperate arrays. Number of different numbers must be known to use this approach. Fastest on large arrays.
+```
+public int FindWithArray(int[] data)
+{
+    int[] distances = new int[11];
+    int[] firstIndexes = new int[11];
+
+    for (int i = 0; i < firstIndexes.Length; i++)
+    {
+        firstIndexes[i] = -1;
+    }
+
+    for (int i = 0; i < data.Length; ++i)
+    {
+        if (firstIndexes[data[i]] == -1)
+        {
+            firstIndexes[data[i]] = i;
+        }
+        else
+        {
+            distances[data[i]] = i - firstIndexes[data[i]];
+        }
+    }
+
+    return distances.Max();
+}
+```
 
 ### FindWithArray2
 
 Simiar to FindWithArray but instead of storing distances for each number stores only the maximum distance. Fastest on smallest arrays.
+```
+public int FindWithArray2(int[] data)
+{
+    int maxDist = 0;
+    int[] firstIndexes = new int[11];
+
+    for (int i = 0; i < firstIndexes.Length; i++)
+    {
+        firstIndexes[i] = -1;
+    }
+
+    for (int i = 0; i < data.Length; ++i)
+    {
+        if (firstIndexes[data[i]] == -1)
+        {
+            firstIndexes[data[i]] = i;
+        }
+        else
+        {
+            var dist = i - firstIndexes[data[i]];
+            if (dist > maxDist)
+            {
+                maxDist = dist;
+            }
+        }
+    }
+
+    return maxDist;
+}
+```
 
 ## FindDistances - results
 
