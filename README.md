@@ -40,7 +40,7 @@ Simiar to FindWithArray but instead of storing distances for each number stores 
 
 ## FindDistances - results
 
-Example runs results using Benchmark.NET on a 16 GB 3200 MHz AMD Radeon 2600 machine.
+Example runs results using Benchmark.NET on a 16 GB 3200 MHz AMD Ryzen 5 2600 machine.
 
 ### N = 100, N = 10000
 All methods are tested
