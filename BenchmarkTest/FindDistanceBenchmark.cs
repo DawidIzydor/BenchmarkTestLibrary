@@ -7,7 +7,7 @@ namespace BenchmarkTest
     public class FindDistanceBenchmark
     {
         private int[] _data;
-        [Params(100, 10000, 1000000)] public int N { get; set; }
+        [Params(100000)] public int N { get; set; }
 
         [GlobalSetup]
         public void Setup()
@@ -29,22 +29,31 @@ namespace BenchmarkTest
         //public int BaseDivided() => new FindDistance().BaseDividedFind(_data);
 
 
-        [Benchmark]
-        public int FindWithDict() => new FindDistance().FindWithDict(_data);
+        //[Benchmark]
+        //public int FindWithDict() => new FindDistance().FindWithDict(_data);
 
-        [Benchmark]
-        public int FindWithDictAndLinq() => new FindDistance().FindWithDictAndLinq(_data);
+        //[Benchmark]
+        //public int FindWithDictAndLinq() => new FindDistance().FindWithDictAndLinq(_data);
 
-        [Benchmark]
-        public int FindWithDictAndClass() => new FindDistance().FindWithDictAndClass(_data);
+        //[Benchmark]
+        //public int FindWithDictAndClass() => new FindDistance().FindWithDictAndClass(_data);
 
-        [Benchmark]
-        public int FindWithDictClassAndLinq() => new FindDistance().FindWithDictClassAndLinq(_data);
+        //[Benchmark]
+        //public int FindWithDictClassAndLinq() => new FindDistance().FindWithDictClassAndLinq(_data);
 
         [Benchmark]
         public int FindWithArray() => new FindDistance().FindWithArray(_data);
 
         [Benchmark]
         public int FindWithArray2() => new FindDistance().FindWithArray2(_data);
+
+        [Benchmark]
+        public int FindWithArrayNoLINQ() => new FindDistance().FindWithArrayNoLINQ(_data);
+
+
+        [Benchmark]
+        public int SearchFirstAndLastIndex() => new FindDistance().SearchFirstAndLastIndex(_data);
+        [Benchmark]
+        public int SearchFirstAndLastIndex2() => new FindDistance().SearchFirstAndLastIndex2(_data);
     }
 }

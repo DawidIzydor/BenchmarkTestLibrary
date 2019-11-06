@@ -82,10 +82,40 @@ namespace Tests
         }
 
         [Fact]
+        public void FindWithArrayNoLINQTest()
+        {
+            int result100 = new FindDistance().FindWithArrayNoLINQ(testData(100));
+            int result10000 = new FindDistance().FindWithArrayNoLINQ(testData(10000));
+
+            Assert.Equal(91, result100);
+            Assert.Equal(9992, result10000);
+        }
+
+        [Fact]
         public void FindWithArray2Test()
         {
             int result100 = new FindDistance().FindWithArray2(testData(100));
             int result10000 = new FindDistance().FindWithArray2(testData(10000));
+
+            Assert.Equal(91, result100);
+            Assert.Equal(9992, result10000);
+        }
+
+        [Fact]
+        public void SearchFirstAndLastIndexTest()
+        {
+            int result100 = new FindDistance().SearchFirstAndLastIndex(testData(100));
+            int result10000 = new FindDistance().SearchFirstAndLastIndex(testData(10000));
+
+            Assert.Equal(91, result100);
+            Assert.Equal(9992, result10000);
+        }
+
+        [Fact]
+        public void SearchFirstAndLastIndex2Test()
+        {
+            int result100 = new FindDistance().SearchFirstAndLastIndex2(testData(100));
+            int result10000 = new FindDistance().SearchFirstAndLastIndex2(testData(10000));
 
             Assert.Equal(91, result100);
             Assert.Equal(9992, result10000);
