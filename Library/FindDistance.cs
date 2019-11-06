@@ -341,6 +341,44 @@ namespace Library
             return maxDist;
         }
 
+        public int SearchFirstAndLastIndex3(int[] data)
+        {
+            int[] firstIndexes = new int[11];
+            for (int i = 0; i < firstIndexes.Length; i++)
+            {
+                firstIndexes[i] = -1;
+            }
+
+            int indexesToFind = 11;
+
+            for (int i = 0; i < data.Length; ++i)
+            {
+                if (firstIndexes[data[i]] == -1)
+                {
+                    firstIndexes[data[i]] = i;
+                    indexesToFind--;
+                    if (indexesToFind <= 0)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            int maxDistance = 0;
+
+            for (int i = data.Length-1; i > maxDistance; --i)
+            {
+                int dist = i - firstIndexes[data[i]];
+                if (dist > maxDistance)
+                {
+                    maxDistance = dist;
+                }
+            }
+
+            return maxDistance;
+        }
+
+
         private class DistanceStruct
         {
             public int Distance { get; set; }

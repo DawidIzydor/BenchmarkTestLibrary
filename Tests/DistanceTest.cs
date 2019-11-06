@@ -120,5 +120,15 @@ namespace Tests
             Assert.Equal(91, result100);
             Assert.Equal(9992, result10000);
         }
+
+        [Fact]
+        public void SearchFirstAndLastIndex3Test()
+        {
+            int result100 = new FindDistance().SearchFirstAndLastIndex3(testData(100));
+            int result10000 = new FindDistance().SearchFirstAndLastIndex3(testData(10000));
+
+            Assert.Equal(91, result100);
+            Assert.Equal(9992, result10000);
+        }
     }
 }

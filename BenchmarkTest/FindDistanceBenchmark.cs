@@ -29,17 +29,17 @@ namespace BenchmarkTest
         //public int BaseDivided() => new FindDistance().BaseDividedFind(_data);
 
 
-        //[Benchmark]
-        //public int FindWithDict() => new FindDistance().FindWithDict(_data);
+        [Benchmark]
+        public int FindWithDict() => new FindDistance().FindWithDict(_data);
 
-        //[Benchmark]
-        //public int FindWithDictAndLinq() => new FindDistance().FindWithDictAndLinq(_data);
+        [Benchmark]
+        public int FindWithDictAndLinq() => new FindDistance().FindWithDictAndLinq(_data);
 
-        //[Benchmark]
-        //public int FindWithDictAndClass() => new FindDistance().FindWithDictAndClass(_data);
+        [Benchmark]
+        public int FindWithDictAndClass() => new FindDistance().FindWithDictAndClass(_data);
 
-        //[Benchmark]
-        //public int FindWithDictClassAndLinq() => new FindDistance().FindWithDictClassAndLinq(_data);
+        [Benchmark]
+        public int FindWithDictClassAndLinq() => new FindDistance().FindWithDictClassAndLinq(_data);
 
         [Benchmark]
         public int FindWithArray() => new FindDistance().FindWithArray(_data);
@@ -53,7 +53,11 @@ namespace BenchmarkTest
 
         [Benchmark]
         public int SearchFirstAndLastIndex() => new FindDistance().SearchFirstAndLastIndex(_data);
+
         [Benchmark]
         public int SearchFirstAndLastIndex2() => new FindDistance().SearchFirstAndLastIndex2(_data);
+
+        [Benchmark]
+        public int SearchFirstAndLastIndex3() => new FindDistance().SearchFirstAndLastIndex3(_data);
     }
 }
