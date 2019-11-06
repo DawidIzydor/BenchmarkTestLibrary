@@ -4,7 +4,9 @@ This is an example Benchmark.NET library with xUnit tests implemented.
 
 ## Summary
 
-The fastest implementation is SearchFirstAndLastIndex for large arrays and FindWithArray2 for the smallest arrays. It searches for the first and last index of each number and then finds the largest distance. On an evenly random distributed array of data it should run in O(n/4)
+The fastest implementation is SearchFirstAndLastIndex3. It searches for the first index of each number and then last index until reaches a certain point (it does not look for all last indexes before calculating distance like SearchFirstAndLastIndex and SearchFirstAndLastIndex2, see more below).
+
+Next is SearchFirstAndLastIndex for large arrays and FindWithArray2 for the smallest arrays. It searches for the first and last index of each number and then finds the largest distance. On an evenly random distributed array of data it should run in O(n/4)
 
 Next is FindWithArray. The difference between small and large arrays in FindWithArray and FindWithArray2 is caused by comparing of maximum distance - in the FindWithArray method it happens only at the end at the cost of using a little bit more memory. FindWithArray2 needs to compare in each loop iteration thus being a little bit slower on bigger arrays but takes less  memory.
 
@@ -263,6 +265,48 @@ public int SearchFirstAndLastIndex2(int[] data)
 }
 ```
 
+### SearchFirstAndLastIndex3
+Similar to SearchFirstAndLastIndex and SearchFirstAndLastIndex2 but does not look for all last indexes before calculating distance.
+
+```
+public int SearchFirstAndLastIndex3(int[] data)
+{
+    int[] firstIndexes = new int[11];
+    for (int i = 0; i < firstIndexes.Length; i++)
+    {
+        firstIndexes[i] = -1;
+    }
+
+    int indexesToFind = 11;
+
+    for (int i = 0; i < data.Length; ++i)
+    {
+        if (firstIndexes[data[i]] == -1)
+        {
+            firstIndexes[data[i]] = i;
+            indexesToFind--;
+            if (indexesToFind <= 0)
+            {
+                break;
+            }
+        }
+    }
+
+    int maxDistance = 0;
+
+    for (int i = data.Length-1; i > maxDistance; --i)
+    {
+        int dist = i - firstIndexes[data[i]];
+        if (dist > maxDistance)
+        {
+            maxDistance = dist;
+        }
+    }
+
+    return maxDistance;
+}
+```
+
 ## FindDistances - results
 
 Example runs results using Benchmark.NET on a 16 GB 3200 MHz AMD Ryzen 5 2600 machine.
@@ -270,53 +314,57 @@ Example runs results using Benchmark.NET on a 16 GB 3200 MHz AMD Ryzen 5 2600 ma
 ### N = 100, N = 10000
 All methods are tested
 
-|                   Method |     N |              Mean |          Error |         StdDev |
-|------------------------- |------ |------------------:|---------------:|---------------:|
-|                     Base |    10 |         113.70 ns |       0.737 ns |       0.689 ns |
-|              BaseDivided |    10 |          44.74 ns |       0.892 ns |       0.835 ns |
-|             FindWithDict |    10 |         398.63 ns |       1.940 ns |       1.814 ns |
-|      FindWithDictAndLinq |    10 |         500.39 ns |       1.165 ns |       1.032 ns |
-|     FindWithDictAndClass |    10 |         339.03 ns |       2.318 ns |       2.168 ns |
-| FindWithDictClassAndLinq |    10 |         529.00 ns |       1.899 ns |       1.683 ns |
-|            FindWithArray |    10 |          98.94 ns |       0.531 ns |       0.497 ns |
-|           FindWithArray2 |    10 |          29.26 ns |       0.584 ns |       0.673 ns |
-|      FindWithArrayNoLINQ |    10 |          41.76 ns |       0.231 ns |       0.216 ns |
-|  SearchFirstAndLastIndex |    10 |          51.42 ns |       0.706 ns |       0.626 ns |
-| SearchFirstAndLastIndex2 |    10 |          46.09 ns |       0.407 ns |       0.381 ns |
-|                     Base |   100 |      14,464.64 ns |      28.106 ns |      26.291 ns |
-|              BaseDivided |   100 |       6,409.76 ns |      16.757 ns |      15.675 ns |
-|             FindWithDict |   100 |       2,822.54 ns |      11.163 ns |      10.442 ns |
-|      FindWithDictAndLinq |   100 |       2,993.64 ns |      38.974 ns |      34.550 ns |
-|     FindWithDictAndClass |   100 |       1,962.76 ns |       5.723 ns |       5.074 ns |
-| FindWithDictClassAndLinq |   100 |       2,250.63 ns |      18.054 ns |      16.888 ns |
-|            FindWithArray |   100 |         311.22 ns |       3.220 ns |       3.012 ns |
-|           FindWithArray2 |   100 |         164.24 ns |       1.666 ns |       1.558 ns |
-|      FindWithArrayNoLINQ |   100 |         258.22 ns |       1.020 ns |       0.954 ns |
-|  SearchFirstAndLastIndex |   100 |         238.34 ns |       1.096 ns |       1.026 ns |
-| SearchFirstAndLastIndex2 |   100 |         237.16 ns |       0.669 ns |       0.626 ns |
-|                     Base | 10000 | 128,430,587.50 ns | 316,450.742 ns | 280,525.340 ns |
-|              BaseDivided | 10000 |  72,487,206.67 ns | 173,942.792 ns | 162,706.196 ns |
-|             FindWithDict | 10000 |     272,272.90 ns |   1,477.749 ns |   1,382.287 ns |
-|      FindWithDictAndLinq | 10000 |     250,048.18 ns |   1,046.047 ns |     927.293 ns |
-|     FindWithDictAndClass | 10000 |     162,731.14 ns |   2,334.318 ns |   2,183.522 ns |
-| FindWithDictClassAndLinq | 10000 |     162,408.00 ns |     849.677 ns |     794.788 ns |
-|            FindWithArray | 10000 |      21,864.78 ns |     158.527 ns |     148.286 ns |
-|           FindWithArray2 | 10000 |      34,964.93 ns |     117.787 ns |     110.178 ns |
-|      FindWithArrayNoLINQ | 10000 |      22,610.18 ns |      78.407 ns |      73.342 ns |
-|  SearchFirstAndLastIndex | 10000 |      18,239.36 ns |     120.305 ns |     112.533 ns |
-| SearchFirstAndLastIndex2 | 10000 |      18,209.20 ns |      64.315 ns |      60.160 ns |
+|                   Method |     N |              Mean |          Error |         StdDev |            Median |
+|------------------------- |------ |------------------:|---------------:|---------------:|------------------:|
+|                     Base |    10 |         135.63 ns |       1.105 ns |       0.979 ns |         135.12 ns |
+|              BaseDivided |    10 |          50.22 ns |       1.037 ns |       2.907 ns |          50.89 ns |
+|             FindWithDict |    10 |         398.44 ns |       1.293 ns |       1.147 ns |         398.09 ns |
+|      FindWithDictAndLinq |    10 |         510.46 ns |       2.425 ns |       2.268 ns |         510.50 ns |
+|     FindWithDictAndClass |    10 |         337.20 ns |       2.626 ns |       2.456 ns |         336.47 ns |
+| FindWithDictClassAndLinq |    10 |         512.34 ns |       3.340 ns |       3.124 ns |         512.36 ns |
+|            FindWithArray |    10 |         100.13 ns |       0.579 ns |       0.513 ns |         100.03 ns |
+|           FindWithArray2 |    10 |          26.05 ns |       0.532 ns |       0.570 ns |          25.90 ns |
+|      FindWithArrayNoLINQ |    10 |          38.39 ns |       1.112 ns |       3.280 ns |          36.78 ns |
+|  SearchFirstAndLastIndex |    10 |          46.29 ns |       0.435 ns |       0.406 ns |          46.35 ns |
+| SearchFirstAndLastIndex2 |    10 |          54.81 ns |       0.904 ns |       0.801 ns |          54.44 ns |
+| SearchFirstAndLastIndex3 |    10 |          25.73 ns |       0.108 ns |       0.101 ns |          25.74 ns |
+|                     Base |   100 |      13,899.35 ns |      76.602 ns |      63.966 ns |      13,896.10 ns |
+|              BaseDivided |   100 |       6,414.24 ns |      15.427 ns |      13.676 ns |       6,412.38 ns |
+|             FindWithDict |   100 |       2,822.55 ns |      14.248 ns |      12.630 ns |       2,823.48 ns |
+|      FindWithDictAndLinq |   100 |       2,951.01 ns |      15.145 ns |      14.167 ns |       2,945.00 ns |
+|     FindWithDictAndClass |   100 |       1,984.49 ns |      15.905 ns |      14.099 ns |       1,982.69 ns |
+| FindWithDictClassAndLinq |   100 |       2,706.81 ns |      16.756 ns |      14.854 ns |       2,704.69 ns |
+|            FindWithArray |   100 |         276.54 ns |       5.524 ns |      12.693 ns |         277.74 ns |
+|           FindWithArray2 |   100 |         135.14 ns |       0.892 ns |       0.834 ns |         134.88 ns |
+|      FindWithArrayNoLINQ |   100 |         244.89 ns |       4.897 ns |      13.155 ns |         249.42 ns |
+|  SearchFirstAndLastIndex |   100 |         226.69 ns |       2.390 ns |       2.236 ns |         226.90 ns |
+| SearchFirstAndLastIndex2 |   100 |         239.34 ns |       3.204 ns |       2.997 ns |         238.70 ns |
+| SearchFirstAndLastIndex3 |   100 |         126.42 ns |       0.875 ns |       0.818 ns |         126.72 ns |
+|                     Base | 10000 | 131,054,505.00 ns | 670,052.729 ns | 626,767.739 ns | 130,983,525.00 ns |
+|              BaseDivided | 10000 |  61,527,713.68 ns |  71,042.465 ns |  59,323.676 ns |  61,498,833.33 ns |
+|             FindWithDict | 10000 |     250,590.46 ns |     754.727 ns |     705.972 ns |     250,339.45 ns |
+|      FindWithDictAndLinq | 10000 |     249,421.51 ns |   1,691.051 ns |   1,581.810 ns |     249,170.21 ns |
+|     FindWithDictAndClass | 10000 |     161,527.06 ns |     935.226 ns |     874.811 ns |     160,965.01 ns |
+| FindWithDictClassAndLinq | 10000 |     163,146.77 ns |   1,907.204 ns |   1,784.000 ns |     162,619.92 ns |
+|            FindWithArray | 10000 |      21,728.67 ns |     370.657 ns |     346.713 ns |      21,865.56 ns |
+|           FindWithArray2 | 10000 |      33,209.87 ns |      75.256 ns |      62.843 ns |      33,183.92 ns |
+|      FindWithArrayNoLINQ | 10000 |      22,284.22 ns |     427.739 ns |     525.302 ns |      22,309.45 ns |
+|  SearchFirstAndLastIndex | 10000 |      20,754.98 ns |      51.310 ns |      47.995 ns |      20,738.47 ns |
+| SearchFirstAndLastIndex2 | 10000 |      18,149.69 ns |      22.794 ns |      20.207 ns |      18,147.49 ns |
+| SearchFirstAndLastIndex3 | 10000 |       7,793.60 ns |      10.939 ns |       9.134 ns |       7,790.20 ns |
 
 ### N = 1000000
 All methods but Base and BaseDivided due to times being too long (Base would take about 24 minutes). Take note results are in miliseconds not nanoseconds like before. 
 
-|                   Method |       N |      Mean |     Error |    StdDev |
-|------------------------- |-------- |----------:|----------:|----------:|
-|             FindWithDict | 1000000 | 24.816 ms | 0.1010 ms | 0.0789 ms |
-|      FindWithDictAndLinq | 1000000 | 24.701 ms | 0.0752 ms | 0.0667 ms |
-|     FindWithDictAndClass | 1000000 | 16.090 ms | 0.1058 ms | 0.0990 ms |
-| FindWithDictClassAndLinq | 1000000 | 16.288 ms | 0.1233 ms | 0.1093 ms |
-|            FindWithArray | 1000000 |  2.182 ms | 0.0066 ms | 0.0062 ms |
-|           FindWithArray2 | 1000000 |  3.485 ms | 0.0139 ms | 0.0130 ms |
-|      FindWithArrayNoLINQ | 1000000 |  2.252 ms | 0.0100 ms | 0.0094 ms |
-|  SearchFirstAndLastIndex | 1000000 |  2.068 ms | 0.0101 ms | 0.0095 ms |
-| SearchFirstAndLastIndex2 | 1000000 |  2.075 ms | 0.0074 ms | 0.0066 ms |
+|                   Method |       N |        Mean |     Error |    StdDev |
+|------------------------- |-------- |------------:|----------:|----------:|
+|             FindWithDict | 1000000 | 24,845.5 us | 115.08 us | 102.01 us |
+|      FindWithDictAndLinq | 1000000 | 24,847.6 us | 133.73 us | 125.09 us |
+|     FindWithDictAndClass | 1000000 | 16,201.4 us | 244.09 us | 228.32 us |
+| FindWithDictClassAndLinq | 1000000 | 16,498.3 us | 152.33 us | 142.49 us |
+|            FindWithArray | 1000000 |  2,184.1 us |   6.22 us |   5.81 us |
+|           FindWithArray2 | 1000000 |  3,653.7 us |  32.93 us |  29.19 us |
+|      FindWithArrayNoLINQ | 1000000 |  2,265.3 us |  13.13 us |  12.28 us |
+|  SearchFirstAndLastIndex | 1000000 |  1,553.3 us |   5.06 us |   4.73 us |
+| SearchFirstAndLastIndex2 | 1000000 |  1,811.1 us |   4.46 us |   4.17 us |
+| SearchFirstAndLastIndex3 | 1000000 |    778.2 us |   3.24 us |   2.71 us |
