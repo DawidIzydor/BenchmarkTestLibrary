@@ -4,9 +4,9 @@ This is an example Benchmark.NET library with xUnit tests implemented.
 
 ## Summary
 
-The fastest implementation is SearchFirstAndLastIndex3. It searches for the first index of each number and then last index until reaches a certain point (it does not look for all last indexes before calculating distance like SearchFirstAndLastIndex and SearchFirstAndLastIndex2, see more below).
+The fastest implementation is SearchFirstAndLastIndex3. It searches for the first index of each number and then last index until reaches a certain point (it does not look for all last indexes before calculating distance like SearchFirstAndLastIndex and SearchFirstAndLastIndex2, see more below). On a test data in run in about O(3/4 N) (linear regression from the results provided a 0.778174x + 26.2857 equation). 
 
-Next is SearchFirstAndLastIndex for large arrays and FindWithArray2 for the smallest arrays. It searches for the first and last index of each number and then finds the largest distance. On an evenly random distributed array of data it should run in O(n/4)
+Next is SearchFirstAndLastIndex for large arrays and FindWithArray2 for the smallest arrays. It searches for the first and last index of each number and then finds the largest distance.
 
 Next is FindWithArray. The difference between small and large arrays in FindWithArray and FindWithArray2 is caused by comparing of maximum distance - in the FindWithArray method it happens only at the end at the cost of using a little bit more memory. FindWithArray2 needs to compare in each loop iteration thus being a little bit slower on bigger arrays but takes less  memory.
 
@@ -26,7 +26,7 @@ Finds the largest distance between two equal numbers in a sequence. For example 
 
 Most basic two loops implementation, easiest to implement, longest to run. Each loop goes for the whole array, a new distance is calculated for two equal numbers.
 
-```
+```csharp
 public int BaseFind(int[] data)
 {
     int distance = 0;
@@ -59,7 +59,7 @@ A little bit quicker version that starts the base one. The inner loop starts fro
 ### FindWithDict
 
 Implementation that uses generic dictionary with tuple. If a number is found for the first time it adds a tuple with the index it was found. The next occurences of the same number calculates the distance between first index and current index. Then a maximum distance value is found from the dictionary.
-```
+```csharp
 public int FindWithDict(int[] data)
 {
     int distance = 0;
@@ -98,7 +98,7 @@ Similar to the previous one but instead of searching maximum value with foreach 
 ### FindWithDictAndClass
 
 Similar to FindWithDict but uses a class instead of a tuple.
-```
+```csharp
 private class DistanceStruct
 {
     public int Distance { get; set; }
@@ -142,7 +142,7 @@ Similar to FindWithDictAndLinq but uses a class instead of a tuple.
 ### FindWithArray
 
 Uses two arrays and stores first index and distances for numbers in seperate arrays. Number of different numbers must be known to use this approach. Fastest on large arrays.
-```
+```csharp
 public int FindWithArray(int[] data)
 {
     int[] distances = new int[11];
@@ -172,7 +172,7 @@ public int FindWithArray(int[] data)
 ### FindWithArray2
 
 Simiar to FindWithArray but instead of storing distances for each number stores only the maximum distance. Fastest on smallest arrays.
-```
+```csharp
 public int FindWithArray2(int[] data)
 {
     int maxDist = 0;
@@ -211,7 +211,7 @@ Searches for the first and last index for each number and then compares distance
 
 A little bit faster version of SearchFirstAndLastIndex - it searches for first and last index in the same loop
 
-```
+```csharp
 public int SearchFirstAndLastIndex2(int[] data)
 {
     int[] firstIndexes = new int[11];
@@ -268,7 +268,7 @@ public int SearchFirstAndLastIndex2(int[] data)
 ### SearchFirstAndLastIndex3
 Similar to SearchFirstAndLastIndex and SearchFirstAndLastIndex2 but does not look for all last indexes before calculating distance.
 
-```
+```csharp
 public int SearchFirstAndLastIndex3(int[] data)
 {
     int[] firstIndexes = new int[11];
