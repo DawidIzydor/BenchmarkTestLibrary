@@ -354,7 +354,7 @@ All methods are tested
 | SearchFirstAndLastIndex3 | 10000 |       7,793.60 ns |      10.939 ns |       9.134 ns |       7,790.20 ns |
 
 ### N = 1000000
-All methods but Base and BaseDivided due to times being too long (Base would take about 24 minutes). Take note results are in miliseconds not nanoseconds like before. 
+All methods but Base and BaseDivided due to times being too long (Base would take about 24 minutes).
 
 |                   Method |       N |        Mean |     Error |    StdDev |
 |------------------------- |-------- |------------:|----------:|----------:|
