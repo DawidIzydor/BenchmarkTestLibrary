@@ -308,6 +308,7 @@ All methods are tested
 
 ### N = 1000000
 All methods but Base and BaseDivided due to times being too long (Base would take about 24 minutes). Take note results are in miliseconds not nanoseconds like before. 
+
 |                   Method |       N |      Mean |     Error |    StdDev |
 |------------------------- |-------- |----------:|----------:|----------:|
 |             FindWithDict | 1000000 | 24.816 ms | 0.1010 ms | 0.0789 ms |
