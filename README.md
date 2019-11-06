@@ -308,12 +308,14 @@ All methods are tested
 
 ### N = 1000000
 All methods but Base and BaseDivided due to times being too long (Base would take about 24 minutes). Take note results are in miliseconds not nanoseconds like before. 
-
 |                   Method |       N |      Mean |     Error |    StdDev |
 |------------------------- |-------- |----------:|----------:|----------:|
-|             FindWithDict | 1000000 | 24.857 ms | 0.0946 ms | 0.0885 ms |
-|      FindWithDictAndLinq | 1000000 | 25.004 ms | 0.1569 ms | 0.1467 ms |
-|     FindWithDictAndClass | 1000000 | 16.114 ms | 0.0745 ms | 0.0697 ms |
-| FindWithDictClassAndLinq | 1000000 | 16.162 ms | 0.0962 ms | 0.0900 ms |
-|            FindWithArray | 1000000 |  2.187 ms | 0.0108 ms | 0.0101 ms |
-|           FindWithArray2 | 1000000 |  3.698 ms | 0.0281 ms | 0.0263 ms |
+|             FindWithDict | 1000000 | 24.816 ms | 0.1010 ms | 0.0789 ms |
+|      FindWithDictAndLinq | 1000000 | 24.701 ms | 0.0752 ms | 0.0667 ms |
+|     FindWithDictAndClass | 1000000 | 16.090 ms | 0.1058 ms | 0.0990 ms |
+| FindWithDictClassAndLinq | 1000000 | 16.288 ms | 0.1233 ms | 0.1093 ms |
+|            FindWithArray | 1000000 |  2.182 ms | 0.0066 ms | 0.0062 ms |
+|           FindWithArray2 | 1000000 |  3.485 ms | 0.0139 ms | 0.0130 ms |
+|      FindWithArrayNoLINQ | 1000000 |  2.252 ms | 0.0100 ms | 0.0094 ms |
+|  SearchFirstAndLastIndex | 1000000 |  2.068 ms | 0.0101 ms | 0.0095 ms |
+| SearchFirstAndLastIndex2 | 1000000 |  2.075 ms | 0.0074 ms | 0.0066 ms |
